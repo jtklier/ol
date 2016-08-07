@@ -8,7 +8,7 @@ var page = 40;
 var parser = csv.parse({delimiter: ',', columns: true });
 parser.on('readable', function(){
   while((record = parser.read()) && limitCount<MAXLIMIT){
-    if(parser.count >= page*MAXLIMIT){
+    if(parser.count > page*MAXLIMIT){
       console.log(record);
       limitCount++;
     }
