@@ -1,0 +1,25 @@
+{
+  "name": "ol",
+  "version": "1.0.0",
+  "description": "REST API project",
+  "main": "index.js",
+  "dependencies": {
+    "csv": "^1.1.0",
+    "foreman": "1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtklier/ol.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jtklier/ol/issues"
+  },
+  "homepage": "https://github.com/jtklier/ol#readme"
+}
