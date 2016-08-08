@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "csv": "^1.1.0",
-    "foreman": "1.4.1"
+    "express": "^4.14.0"
   },
   "devDependencies": {},
   "scripts": {
