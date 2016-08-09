@@ -7,34 +7,55 @@ var output;
 
 app.get('/businesses', function( req, res ){
   var rs = fs.createReadStream('data/50k_businesses.csv');
-    page = req.query.page || 0;
+    var page = req.query.page || 1;
     var MAXLIMIT = req.query.recordsPerPage || 50;
-    var offset = page*MAXLIMIT;
+    var offset = (page-1)*MAXLIMIT;
     output = {'page': page, businesses: []};
+    res.type('json');
 
-    var parser = csv.parse({delimiter: ',', columns: true }, function(err, data){
-      if(err) output.errMsg = err;
-      else{
-          for(var i=0; i<MAXLIMIT; i++){
-            output.businesses.push(data[i+offset]);
-          }
-          res.end(JSON.stringify(output));
-    }
+    //TODO add error handling here for invalid requests
+
+
+    var parser = csv.parse({delimiter: ',', columns: true });
+
+    parser.on('readable', function(){
+      while(record = parser.read()){
+        if(output.businesses.length == MAXLIMIT){
+          rs.destroy();
+          res.status(200).end(JSON.stringify(output));
+        }
+        else if(parser.count > offset)
+          output.businesses.push(record);
+      }
     });
+
+    parser.on('error', function(err){
+      res.status(500).render('error', { message: err });
+    })
     rs.pipe(parser);
 });
 
 
 app.get('/businesses/:id', function( req, res){
   var rs = fs.createReadStream('data/50k_businesses.csv');
-  var index = parseInt(req.params.id);
-  var parser = csv.parse({delimiter: ',', columns: true }, function(err, data){
-    if(err)
-      output.errMsg = err;
-    else
-      output = data[index];
-    res.end(JSON.stringify(output));
+  var index =req.params.id;
+  output = {};
+  res.type('json');
+  var parser = csv.parse({delimiter: ',', columns: true });
+
+  parser.on('readable', function(){
+    while(record = parser.read()){
+      if(index === record.id){
+        output = record;
+        rs.destroy();
+        res.status(200).end(JSON.stringify(output));
+      }
+    }
   });
+
+  parser.on('error', function(err){
+    res.status(500).render('error', { message: err });
+  })
   rs.pipe(parser);
 });
 
