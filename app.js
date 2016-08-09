@@ -8,7 +8,7 @@ var output;
 app.get('/businesses', function( req, res ){
   var rs = fs.createReadStream('data/50k_businesses.csv');
     page = req.query.page || 0;
-    var MAXLIMIT = 50;
+    var MAXLIMIT = req.query.recordsPerPage || 50;
     var offset = page*MAXLIMIT;
     output = {'page': page, businesses: []};
 
