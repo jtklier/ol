@@ -9,26 +9,29 @@ mongoose.connect(config.dbUrl);
 
 var totalNumRecords;
 var output;
-
-
+/*GET /businesses */
 app.get(config.businessesURI, function( req, res ){
     var page = req.query.page || 1;
-    var recordsPerPage = req.query.recordsPerPage || 50;
+    var recordsPerPage = req.query.records_per_page || 50;
     var offset = (page-1)*recordsPerPage;
     output = {'page': parseInt(page), 'records_per_page': parseInt(recordsPerPage), 'businesses': []};
     res.type('json');
-    //TODO add error handling here for invalid requests
+
     if(isNaN(page) || parseInt(page) < 1){
+      if(isNaN(page))
+        output.page = page;
       output.message = 'Invalid parameter - Please input a positive integer for the page.';
-      res.status(400).end(JSON.stringify(output));
+      res.status(400).json(output);
     }
     else if(isNaN(recordsPerPage) || parseInt(recordsPerPage) < 1){
-      output.message = 'Invalid parameter - Please input a positive integer for the recordsPerPage.';
-      res.status(400).end(JSON.stringify(output));
+      if(isNaN(recordsPerPage))
+        output.records_per_page = recordsPerPage;
+      output.message = 'Invalid parameter - Please input a positive integer for the records_per_page.';
+      res.status(400).json(output);
     }
     else if((page*recordsPerPage) > totalNumRecords){
       output.message = 'Parameter out of bounds - The requested page is out of bounds of the dataset.';
-      res.status(400).end(JSON.stringify(output));
+      res.status(400).json(output);
     }
     else{
       recordsPerPage = parseInt(recordsPerPage);
@@ -43,7 +46,7 @@ app.get(config.businessesURI, function( req, res ){
     }
 });
 
-
+/*GET /businesses/{id} */
 app.get(config.businessesURI+'/:id', function( req, res){
   var requestedId = req.params.id;
   output = {};

@@ -69,8 +69,8 @@ frisby.create('Get businesses with page=5')
   .expectJSONLength('businesses', 50)
   .toss();
 
-frisby.create('Get businesses with page=100 and recordsPerPage=30')
-  .get('http://'+config.serverAddress+':'+config.serverPort+config.businessesURI+'?page=100&recordsPerPage=30')
+frisby.create('Get businesses with page=100 and records_per_page=30')
+  .get('http://'+config.serverAddress+':'+config.serverPort+config.businessesURI+'?page=100&records_per_page=30')
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
   .expectJSON({
