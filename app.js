@@ -11,11 +11,11 @@ var totalNumRecords;
 var output;
 
 
-app.get('/businesses', function( req, res ){
+app.get(config.businessesURI, function( req, res ){
     var page = req.query.page || 1;
     var recordsPerPage = req.query.recordsPerPage || 50;
     var offset = (page-1)*recordsPerPage;
-    output = {'page': page, 'businesses': []};
+    output = {'page': parseInt(page), 'records_per_page': parseInt(recordsPerPage), 'businesses': []};
     res.type('json');
     //TODO add error handling here for invalid requests
     if(isNaN(page) || parseInt(page) < 1){
@@ -44,7 +44,7 @@ app.get('/businesses', function( req, res ){
 });
 
 
-app.get('/businesses/:id', function( req, res){
+app.get(config.businessesURI+'/:id', function( req, res){
   var requestedId = req.params.id;
   output = {};
   res.type('json');
@@ -70,7 +70,7 @@ function setTotalNumRecords(cb) {
   Business.count({}, function(err, count){ cb(count);});
 }
 
-var server = app.listen(8081, function() {
+var server = app.listen(config.serverPort,config.serverAddress, function() {
   var host = server.address().address;
   var port = server.address().port;
   setTotalNumRecords(function(count) {
