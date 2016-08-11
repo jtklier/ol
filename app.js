@@ -1,10 +1,11 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
+var config = require('./config');
 require('./Businesses');
 var Business = mongoose.model('Business');
 
-mongoose.connect('mongodb://localhost/oldb');
+mongoose.connect(config.dbUrl);
 
 var totalNumRecords;
 var output;
@@ -21,11 +22,16 @@ app.get('/businesses', function( req, res ){
       output.message = 'Invalid parameter - Please input a positive integer for the page.';
       res.status(400).end(JSON.stringify(output));
     }
+    else if(isNaN(recordsPerPage) || parseInt(recordsPerPage) < 1){
+      output.message = 'Invalid parameter - Please input a positive integer for the recordsPerPage.';
+      res.status(400).end(JSON.stringify(output));
+    }
     else if((page*recordsPerPage) > totalNumRecords){
       output.message = 'Parameter out of bounds - The requested page is out of bounds of the dataset.';
       res.status(400).end(JSON.stringify(output));
     }
     else{
+      recordsPerPage = parseInt(recordsPerPage);
       Business.find().limit(recordsPerPage).skip(offset).sort({id: 'asc'}).exec(function(err, data){
         if(err){
           output.message = err;
